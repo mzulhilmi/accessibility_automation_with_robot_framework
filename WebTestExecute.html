@@ -1,0 +1,15 @@
+<!DOCTYPE html><HEAD>
+    <script type="text/javascript">
+    function myFunction(){
+        Runtime.getRuntime().exec("cmd /c start execute.bat");
+       //WshShell = new ActiveXObject("Wscript.Shell"); //Create WScript Object
+       //WshShell.run("c://xampp/htdocs/WebAccessibility/execute.bat"); // Please change the path and file name with your relevant available path in client system. This code can be used to execute .exe file as well
+    }
+    </SCRIPT>
+    </HEAD>
+    <BODY>
+    <H1>Example Running Command File from Browser Client Site Using Java Script</H1>
+    Clicking a button executes a Batch file
+    <INPUT TYPE=Button Name=btn Value="Test Java Script" onClick="myFunction()">
+    </BODY>
+    </HTML>
