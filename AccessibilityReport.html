@@ -26,22 +26,27 @@
             var wave_report = [];
             $.getJSON('result.json', function (wave_report) {
                 $.each(wave_report.page, function (i, f) {
-                    var page_title = "<h3>"+f.title+"</h3>";
+                    var page_title = "<h3>" + f.title + "</h3>";
                     $(page_title).appendTo("#detail_report");
-                    $.each(f.report, function(x,y){
-                        if(y.count !== 0)
-                        {
-                            var violation_level = "<h4>"+y.description+"</h4>";
+                    $.each(f.report, function (x, y) {
+                        if (y.count !== 0) {
+                            var violation_level = "<h4>" + y.description + "</h4>";
                             $(violation_level).appendTo("#detail_report");
-                            var violation_count = "<p>There are "+y.count + " " + y.description.toLowerCase() +" violation found</p>";
+                            var violation_count = "<p>There are " + y.count + " " + y.description
+                                .toLowerCase() + " violation found</p>";
                             $(violation_count).appendTo("#detail_report");
-                            var draw_table = "<table class='table table-bordered'><thead><tr><th scope='col'>Violation Name</th><th scope='col'>XPaths</th></tr></thead><tbody>";
-                            $.each(y.items,function(a,b){
+                            var draw_table =
+                                "<table class='table table-bordered'><thead><tr><th scope='col' style='width:25%'>Violation Name</th><th scope='col'>XPaths</th></tr></thead><tbody>";
+                            $.each(y.items, function (a, b) {
                                 var res_xpath = '';
-                                $.each(b.xpaths, function(c,d){
-                                    res_xpath =  d + "<br />" + res_xpath;
+                                $.each(b.xpaths, function (c, d) {
+                                    res_xpath = d + "<br />" +
+                                        res_xpath;
                                 });
-                                draw_table = draw_table + "<tr><td scope='col'>"+b.description+"</td><td scope='col'>"+res_xpath+"</td></tr>";
+                                draw_table = draw_table +
+                                    "<tr><td scope='col'>" + b.description +
+                                    "</td><td scope='col'>" + res_xpath +
+                                    "</td></tr>";
                             });
                             draw_table = draw_table + "</tbody></table>";
                             $(draw_table).appendTo("#detail_report");
@@ -79,7 +84,10 @@
             <tbody>
             </tbody>
         </table>
-        <h2>Details Report <span style="font-size:50%">For every page<span></h2>
+        <h2>Details Report
+            <span style="font-size:50%">For every page
+                <span>
+        </h2>
         <div id="detail_report">
         </div>
     </div>
