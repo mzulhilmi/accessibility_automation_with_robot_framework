@@ -130,7 +130,7 @@ Complete WAVE Report
 Generate Complete JSON Reporting
     ${content}=     Get File        result.json
     ${report}=      Catenate        {"page" : [${content}]}
-    ${report}=      Replace String      ${report}         {"page" : [,      {"page" : [
+    ${report}=      Replace String      ${report}         ,\n]}      ]}
     Remove File     result.json
     Create File     result.json
     Append To File  result.json          ${report}
@@ -141,7 +141,7 @@ Generate JSON Reporting
     Log             ${result}
     ${content}=     Get File        result.json
     Remove File     result.json
-    ${result}=      Catenate        ,{"title" : "${title}", "report" : ${result}}\n       ${content}
+    ${result}=      Catenate        ${content}          {"title" : "${title}", "report" : ${result}},\n
     Create File     result.json
     Append To File  result.json          ${result}
 

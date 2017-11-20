@@ -65,6 +65,8 @@
     <div class="container">
         <!-- Content here -->
         <h1>AirAsia Accessibility Report</h1>
+        <div id="columnchart_material" style="margin:auto; display:block; width: 90%; height: 500px;"></div>
+        <p id="graph_data"></p>
         <h2>Summary Report</h2>
         <table class="table table-bordered" id="page_list">
             <thead>
@@ -98,9 +100,73 @@
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
         crossorigin="anonymous"></script>
-</body>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawChart);
 
-</html>
-</body>
+      var wave_report = [];
+        var counter = 0;
+        $.getJSON('result.json', function (wave_report) {
+            var summary_result = '';
+            $.each(wave_report.page, function (i, f) {
+                var result = [];
+                result.push("'" + f.title + "'");
+                $.each(f.report, function (x, y) {
+                    result.push(y.count);
+                })
+                if(counter > 0){
+                    result = ",[" + result + "]";
+                }
+                else{
+                    result = "[" + result + "]";
+                }
+                //$("<p>" + result + "</p>").appendTo("#graph_data");
+                summary_result = summary_result + result;
+                counter++;
+            });
+            $("<p id='summary_result'>" + summary_result + "</p>").appendTo("#graph_data");
+        });
+
+      function drawChart() {
+          var pageArrayData = [
+          ['Violation', 'Error', 'Alert', 'Feature', 'Structure', 'HTML5', 'Contrast']
+        ];
+        var additional_data = ['AirAsia | Booking | Book low fares online - Search',0,4,4,8,68,0]
+        pageArrayData.push(additional_data);
+        var additional_data = ['AirAsia | Booking | Book low fares online - Select',0,3,7,19,49,0]
+        pageArrayData.push(additional_data);
+        var additional_data = ['AirAsia | Booking | Book low fares online - Select',0,2,1,4,40,0]
+        pageArrayData.push(additional_data);
+        /*
+        var result = document.getElementById("summary_result").innerText;
+        var res = result.split('],[');
+        res.forEach(element => {
+            console.log(element);
+            pageArrayData.push(element);
+        });
+        */
+        var data = google.visualization.arrayToDataTable(pageArrayData);
+        
+        var result = document.getElementById("summary_result").innerText;
+        var res = result.split('],[');
+        res.forEach(element => {
+            element = element + "]";
+            console.log(element);
+            pageArrayData.push(element);
+        });
+        
+
+        var options = {
+          chart: {
+            title: 'AirAsia Web Accessibility',
+            subtitle: 'Error, Alert, and Feature:',
+          }
+        };
+        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+      }
+    </script>
+    </body>
 
 </html>
