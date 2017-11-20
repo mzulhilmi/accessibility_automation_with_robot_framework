@@ -66,7 +66,7 @@
         <!-- Content here -->
         <h1>AirAsia Accessibility Report</h1>
         <div id="columnchart_material" style="margin:auto; display:block; width: 90%; height: 500px;"></div>
-        <p id="graph_data"></p>
+        <p style="display:none" id="graph_data"></p>
         <h2>Summary Report</h2>
         <table class="table table-bordered" id="page_list">
             <thead>
@@ -121,7 +121,6 @@
                 else{
                     result = "[" + result + "]";
                 }
-                //$("<p>" + result + "</p>").appendTo("#graph_data");
                 summary_result = summary_result + result;
                 counter++;
             });
@@ -132,35 +131,37 @@
           var pageArrayData = [
           ['Violation', 'Error', 'Alert', 'Feature', 'Structure', 'HTML5', 'Contrast']
         ];
-        var additional_data = ['AirAsia | Booking | Book low fares online - Search',0,4,4,8,68,0]
-        pageArrayData.push(additional_data);
-        var additional_data = ['AirAsia | Booking | Book low fares online - Select',0,3,7,19,49,0]
-        pageArrayData.push(additional_data);
-        var additional_data = ['AirAsia | Booking | Book low fares online - Select',0,2,1,4,40,0]
-        pageArrayData.push(additional_data);
-        /*
+
         var result = document.getElementById("summary_result").innerText;
         var res = result.split('],[');
         res.forEach(element => {
-            console.log(element);
-            pageArrayData.push(element);
+            var additional_data = []
+            element = element.replace("[", "");
+            element = element.replace("]", "");
+            test = element.split(",");
+            test.forEach(e => {
+                console.log(e);
+                console.log(e.length)
+                if(e.length <= 2)
+                {
+                    e = parseInt(e);
+                    additional_data.push(e);
+                }
+                else{
+                    additional_data.push(e);
+                }
+
+            })
+            console.log(additional_data);
+            pageArrayData.push(additional_data);
         });
-        */
+
         var data = google.visualization.arrayToDataTable(pageArrayData);
         
-        var result = document.getElementById("summary_result").innerText;
-        var res = result.split('],[');
-        res.forEach(element => {
-            element = element + "]";
-            console.log(element);
-            pageArrayData.push(element);
-        });
-        
-
         var options = {
           chart: {
-            title: 'AirAsia Web Accessibility',
-            subtitle: 'Error, Alert, and Feature:',
+            title: 'AirAsia Web Accessibility'
+            //subtitle: 'Error, Alert, Feature, Structure, HTML5 and Contrast:',
           }
         };
         var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
