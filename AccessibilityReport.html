@@ -26,22 +26,27 @@
             var wave_report = [];
             $.getJSON('result.json', function (wave_report) {
                 $.each(wave_report.page, function (i, f) {
-                    var page_title = "<h3>"+f.title+"</h3>";
+                    var page_title = "<h3>" + f.title + "</h3>";
                     $(page_title).appendTo("#detail_report");
-                    $.each(f.report, function(x,y){
-                        if(y.count !== 0)
-                        {
-                            var violation_level = "<h4>"+y.description+"</h4>";
+                    $.each(f.report, function (x, y) {
+                        if (y.count !== 0) {
+                            var violation_level = "<h4>" + y.description + "</h4>";
                             $(violation_level).appendTo("#detail_report");
-                            var violation_count = "<p>There are "+y.count + " " + y.description.toLowerCase() +" violation found</p>";
+                            var violation_count = "<p>There are " + y.count + " " + y.description
+                                .toLowerCase() + " violation found</p>";
                             $(violation_count).appendTo("#detail_report");
-                            var draw_table = "<table class='table table-bordered'><thead><tr><th scope='col'>Violation Name</th><th scope='col'>XPaths</th></tr></thead><tbody>";
-                            $.each(y.items,function(a,b){
+                            var draw_table =
+                                "<table class='table table-bordered'><thead><tr><th scope='col' style='width:25%'>Violation Name</th><th scope='col'>XPaths</th></tr></thead><tbody>";
+                            $.each(y.items, function (a, b) {
                                 var res_xpath = '';
-                                $.each(b.xpaths, function(c,d){
-                                    res_xpath =  d + "<br />" + res_xpath;
+                                $.each(b.xpaths, function (c, d) {
+                                    res_xpath = d + "<br />" +
+                                        res_xpath;
                                 });
-                                draw_table = draw_table + "<tr><td scope='col'>"+b.description+"</td><td scope='col'>"+res_xpath+"</td></tr>";
+                                draw_table = draw_table +
+                                    "<tr><td scope='col'>" + b.description +
+                                    "</td><td scope='col'>" + res_xpath +
+                                    "</td></tr>";
                             });
                             draw_table = draw_table + "</tbody></table>";
                             $(draw_table).appendTo("#detail_report");
@@ -60,6 +65,8 @@
     <div class="container">
         <!-- Content here -->
         <h1>AirAsia Accessibility Report</h1>
+        <div id="columnchart_material" style="margin:auto; display:block; width: 90%; height: 500px;"></div>
+        <p style="display:none" id="graph_data"></p>
         <h2>Summary Report</h2>
         <table class="table table-bordered" id="page_list">
             <thead>
@@ -79,7 +86,10 @@
             <tbody>
             </tbody>
         </table>
-        <h2>Details Report <span style="font-size:50%">For every page<span></h2>
+        <h2>Details Report
+            <span style="font-size:50%">For every page
+                <span>
+        </h2>
         <div id="detail_report">
         </div>
     </div>
@@ -90,9 +100,74 @@
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
         crossorigin="anonymous"></script>
-</body>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawChart);
 
-</html>
-</body>
+      var wave_report = [];
+        var counter = 0;
+        $.getJSON('result.json', function (wave_report) {
+            var summary_result = '';
+            $.each(wave_report.page, function (i, f) {
+                var result = [];
+                result.push("'" + f.title + "'");
+                $.each(f.report, function (x, y) {
+                    result.push(y.count);
+                })
+                if(counter > 0){
+                    result = ",[" + result + "]";
+                }
+                else{
+                    result = "[" + result + "]";
+                }
+                summary_result = summary_result + result;
+                counter++;
+            });
+            $("<p id='summary_result'>" + summary_result + "</p>").appendTo("#graph_data");
+        });
+
+      function drawChart() {
+          var pageArrayData = [
+          ['Violation', 'Error', 'Alert', 'Feature', 'Structure', 'HTML5', 'Contrast']
+        ];
+
+        var result = document.getElementById("summary_result").innerText;
+        var res = result.split('],[');
+        res.forEach(element => {
+            var additional_data = []
+            element = element.replace("[", "");
+            element = element.replace("]", "");
+            test = element.split(",");
+            test.forEach(e => {
+                console.log(e);
+                console.log(e.length)
+                if(e.length <= 2)
+                {
+                    e = parseInt(e);
+                    additional_data.push(e);
+                }
+                else{
+                    additional_data.push(e);
+                }
+
+            })
+            console.log(additional_data);
+            pageArrayData.push(additional_data);
+        });
+
+        var data = google.visualization.arrayToDataTable(pageArrayData);
+        
+        var options = {
+          chart: {
+            title: 'AirAsia Web Accessibility'
+            //subtitle: 'Error, Alert, Feature, Structure, HTML5 and Contrast:',
+          }
+        };
+        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+      }
+    </script>
+    </body>
 
 </html>
